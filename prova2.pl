@@ -1,4 +1,6 @@
 :- dynamic component/7.
+%:- dynamic laptop/7.
+%:- dynamic gaming_console/7.
 
 initialize_db :-
     retractall(component(_, _, _, _, _, _, _)),
