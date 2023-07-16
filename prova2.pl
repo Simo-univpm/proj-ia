@@ -5,6 +5,7 @@ initialize_db :-
     %fare anche: retractall(laptop(_, _, _, _, _, _, _)),
     %fare anche: retractall(gaming_console(_, _, _, _, _, _, _)),
     %no?
+    %implementare anche login, forse
 
     assert(component(0, 'CPU', 'Intel Core i3',           100, 3,  0,  65)),
     assert(component(1, 'GPU', 'NVIDIA GeForce RTX 3080', 700, 10, 16, 185)),
