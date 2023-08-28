@@ -1,5 +1,13 @@
 % FACTS
 
+% Users
+user(john).
+user(lisa).
+user(carl).
+user(don).
+user(abb).
+user(den).
+
 % Search history of users
 /*
 john è un utente che ha visitato prevalentemente cpu.
@@ -102,157 +110,62 @@ user_rating(abb, amd_radeon_rx_6900_xt, 4.5).
 user_rating(den, corsair_vengeance_rgb_pro_16gb, 4.1).
 
 
+% Rule to recommend products to a user
+recommend(User, RecommendedProducts) :-
+    user(User),
+    findall(Product, recommend_product(User, Product), RecommendedProducts).
 
-
-
-
-% RULES
-
-% Calculate the Pearson correlation coefficient between two lists of ratings
-pearson_correlation(User1Ratings, User2Ratings, Similarity) :-
-    length(User1Ratings, N),
-    length(User2Ratings, N),
-    sum_ratings(User1Ratings, Sum1),
-    sum_ratings(User2Ratings, Sum2),
-    sum_squared_ratings(User1Ratings, SumSquared1),
-    sum_squared_ratings(User2Ratings, SumSquared2),
-    sum_product_ratings(User1Ratings, User2Ratings, SumProduct),
-    Numerator is N * SumProduct - Sum1 * Sum2,
-    Denominator1 is sqrt(N * SumSquared1 - Sum1 * Sum1),
-    Denominator2 is sqrt(N * SumSquared2 - Sum2 * Sum2),
-    Denominator is Denominator1 * Denominator2,
-    (Denominator = 0 -> Similarity = 0 ; Similarity is Numerator / Denominator).
-
-% Calculate the sum of ratings in a list
-sum_ratings([], 0).
-sum_ratings([Rating|Rest], Sum) :-
-    sum_ratings(Rest, RestSum),
-    Sum is RestSum + Rating.
-
-% Calculate the sum of squared ratings in a list
-sum_squared_ratings([], 0).
-sum_squared_ratings([Rating|Rest], Sum) :-
-    sum_squared_ratings(Rest, RestSum),
-    Sum is RestSum + Rating * Rating.
-
-% Calculate the sum of product of ratings between two lists
-sum_product_ratings([], [], 0).
-sum_product_ratings([Rating1|Rest1], [Rating2|Rest2], Sum) :-
-    sum_product_ratings(Rest1, Rest2, RestSum),
-    Sum is RestSum + Rating1 * Rating2.
-
-% Remove duplicate recommendations from the list
-remove_duplicates([], []).
-remove_duplicates([[Product, Category, Price]|Tail], [[Product, Category, Price]|Result]) :-
-    remove_duplicates(Tail, Result).
-
-% Format the recommendations as a list of formatted strings
-format_recommendations([], []).
-format_recommendations([[Product, Category, Price]|Tail], [Formatted|Result]) :-
-    format(atom(Formatted), "Product Name: ~w, Category: ~w, Price: ~2f", [Product, Category, Price]),
-    format_recommendations(Tail, Result).
-
-% Collaborative filtering algorithm with user ratings
-recommend(User, MinPrice, MaxPrice, CategoryFilter, Recommendation) :-
+% Rule to recommend a product to a user based on their search history and preferences
+recommend_product(User, Product) :-
+    user(User),
     search_history(User, SearchHistory),
-    % Find all products that match the user's search history, category, and price range
-    findall([Product, Category, Price], (
-        member(Product, SearchHistory),
-        category(Product, Category),
-        price(Product, Price),
-        (MinPrice =< 0.0 ; Price >= MinPrice),
-        (MaxPrice =< 0.0 ; Price =< MaxPrice),
-        (CategoryFilter = 'skip' ; CategoryFilter = Category)
-    ), ExistingRecommendations),
-    % Retrieve user's ratings for products
-    findall(Rating, user_rating(User, _, Rating), UserRatings),
-    % Collaborative filtering: Find similar users based on their ratings
-    findall(SimilarUser, (
-        user_rating(SimilarUser, _, _),
-        SimilarUser \= User,
-        findall(SimilarRating, user_rating(SimilarUser, _, SimilarRating), SimilarRatings),
-        pearson_correlation(UserRatings, SimilarRatings, Similarity),
-        Similarity > 0.3 % Minimum similarity threshold (adjust as needed)
-    ), SimilarUsers),
-    % Find products that the similar users have searched for and add them to recommendations
-    findall([Product, Category, Price], (
-        member(SimilarUser, SimilarUsers),
-        search_history(SimilarUser, SimilarSearchHistory),
-        member(Product, SimilarSearchHistory),
-        category(Product, Category),
-        price(Product, Price),
-        \+ member([Product, Category, Price], ExistingRecommendations), % Exclude already recommended products
-        (MinPrice =< 0.0 ; Price >= MinPrice),
-        (MaxPrice =< 0.0 ; Price =< MaxPrice),
-        (CategoryFilter = 'skip' ; CategoryFilter = Category)
-    ), CollaborativeRecommendations),
-    % Combine and sort the collaborative recommendations
-    sort(CollaborativeRecommendations, SortedCollaborativeRecommendations),
-    % Combine and sort the existing recommendations
-    sort(ExistingRecommendations, SortedExistingRecommendations),
-    % Merge the collaborative and existing recommendations
-    append(SortedCollaborativeRecommendations, SortedExistingRecommendations, AllRecommendations),
-    % Remove duplicate recommendations
-    remove_duplicates(AllRecommendations, UniqueRecommendations),
-    % Format the recommendations for display
-    format_recommendations(UniqueRecommendations, Recommendation).
+    preferred_category(User, PreferredCategory),
+    category(Product, PreferredCategory),
+    \+ member(Product, SearchHistory),
+    \+ already_rated(User, Product).
 
-% Parse the price input, converting "skip" to -1.0
-parse_price_input(skip, -1.0) :- !.
-parse_price_input(Value, ParsedValue) :-
-    (   number(Value)
-    ->  ParsedValue is float(Value)
-    ;   write('Invalid price input. Skipping price filter.'), nl,
-        ParsedValue = -1.0
-    ).
+% Rule to determine preferred category for a user
+preferred_category(User, PreferredCategory) :-
+    user(User),
+    search_history(User, SearchHistory),
+    preferred_category_helper(SearchHistory, PreferredCategory).
 
-% Print the list of recommendations
-print_recommendations([]) :-
-    nl,
-    write('No suggestions.'), nl.
-print_recommendations(Recommendations) :-
-    print_recommendations_list(Recommendations).
+% Helper rule to find preferred category based on search history
+preferred_category_helper(SearchHistory, PreferredCategory) :-
+    count_categories(SearchHistory, CategoryCounts),
+    max_category(CategoryCounts, PreferredCategory).
 
-% Print each recommendation in the list
-print_recommendations_list([]).
-print_recommendations_list([Recommendation|Tail]) :-
-    write('- '), write(Recommendation), nl,
-    print_recommendations_list(Tail).
+% Rule to count the occurrences of each category in a list of products
+count_categories([], []).
+count_categories([Product | Rest], [Category-Count | CategoryCountsRest]) :-
+    category(Product, Category),
+    count_category(Category, Rest, RestCount, Count),
+    count_categories(RestCount, CategoryCountsRest).
 
-% Check if a category exists
-category_exists(Category) :-
-    category(_, Category).
+% Helper rule to count occurrences of a specific category
+count_category(_, [], [], 0).
+count_category(Category, [Product | Rest], RestCount, Count) :-
+    category(Product, Category),
+    count_category(Category, Rest, RestCount, RestCountCount),
+    Count is RestCountCount + 1.
+count_category(Category, [Product | Rest], [Product | RestCount], Count) :-
+    category(Product, DifferentCategory),
+    DifferentCategory \= Category,
+    count_category(Category, Rest, RestCount, Count).
 
-% Main entry point of the program
-:- initialization(main).
+% Rule to find the category with the maximum count
+max_category([Category-Count | Rest], MaxCategory) :-
+    max_category_helper(Rest, Category, Count, MaxCategory).
 
-main :-
-    write('Enter your username: '),
-    read(User),
-    (   search_history(User, _)    % Check if the user exists in the search history
-    ->  (
-            write('Enter the minimum price (or type "skip" to skip): '),
-            read(MinPriceInput),
-            parse_price_input(MinPriceInput, MinPrice),
-            write('Enter the maximum price (or type "skip" to skip): '),
-            read(MaxPriceInput),
-            parse_price_input(MaxPriceInput, MaxPrice),
-            write('Enter the category (or type "skip" to skip): '),
-            read(CategoryFilter),
-            (   category_exists(CategoryFilter)
-            ->  recommend(User, MinPrice, MaxPrice, CategoryFilter, Recommendations),
-                nl,
-                write('Recommendations for '), write(User), write(':'), nl,
-                print_recommendations(Recommendations)
-            ;   write('Category not found. Using "skip" for category filter.'), nl,
-                recommend(User, MinPrice, MaxPrice, 'skip', Recommendations),
-                nl,
-                write('Recommendations for '), write(User), write(':'), nl,
-                print_recommendations(Recommendations)
-            )
-        )
-    ;   write('User not found.')
-    ).
+% Helper rule to find the category with the maximum count
+max_category_helper([], MaxCategory, _, MaxCategory).
+max_category_helper([Category-Count | Rest], _, MaxCount, MaxCategory) :-
+    Count > MaxCount,
+    max_category_helper(Rest, Category, Count, MaxCategory).
+max_category_helper([_ | Rest], PrevCategory, MaxCount, MaxCategory) :-
+    max_category_helper(Rest, PrevCategory, MaxCount, MaxCategory).
 
-
-
+% Rule to check if a user has already rated a product
+already_rated(User, Product) :-
+    user(User),
+    user_rating(User, Product, _).
