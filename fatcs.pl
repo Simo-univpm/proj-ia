@@ -4,29 +4,26 @@
 user(john).
 user(wick).
 user(lisa).
-user(carl).
-user(don).
-user(abb).
-user(den).
+user(homer).
+user(marge).
+user(bart).
 
 % Search history of users
 /*
 john è un utente che ha visitato prevalentemente cpu.
+wick è un utente che ha visitato prevalentemente cpu simile a john.
 lisa  è un utente che ha visitato prevalentemente gpu.
-carl  è un utente che ha visitato prevalentemente ram.
-don  è un utente che ha visitato prevalentemente cpu e qualche gpu.
-abb  è un utente che ha visitato prevalentemente gpu e qualche cpu.
-den  è un utente che ha visitato prodotti in maniera mista.
+homer  è un utente che ha visitato prevalentemente ram.
+marge  è un utente che ha visitato prevalentemente cpu e qualche gpu.
+bart  è un utente che ha visitato prevalentemente gpu e qualche cpu.
 */
 
 search_history(john, [intel_i9_10900k, amd_ryzen_9_5950x, intel_core_i7_11700k, amd_ryzen_7_5800x, intel_core_i5_11600k]).
-search_history(wick, [amd_ryzen_9_5950x, intel_core_i7_11700k, nvidia_geforce_rtx_3080]).
-
+search_history(wick, [amd_ryzen_9_5950x, intel_core_i7_11700k, amd_ryzen_5_5600x, nvidia_geforce_rtx_3080]).
 search_history(lisa, [nvidia_geforce_rtx_3090, amd_radeon_rx_6900_xt, nvidia_geforce_rtx_3080, amd_radeon_rx_6800_xt, nvidia_geforce_rtx_3070]).
-search_history(carl, [corsair_vengeance_rgb_pro_16gb, g_skill_trident_z_neo_32gb, kingston_hyperx_predator_8gb, crucial_ballistix_32gb, team_group_t_force_delta_16gb]).
-search_history(don, [intel_i9_10900k, nvidia_geforce_rtx_3090, amd_ryzen_9_5950x, intel_core_i7_11700k, nvidia_geforce_rtx_3080]).
-search_history(abb, [nvidia_geforce_rtx_3090, intel_i9_10900k, amd_radeon_rx_6900_xt, nvidia_geforce_rtx_3080, amd_ryzen_9_5950x]).
-search_history(den, [intel_i9_10900k, nvidia_geforce_rtx_3090, corsair_vengeance_rgb_pro_16gb, amd_radeon_rx_6900_xt, g_skill_trident_z_neo_32gb]).
+search_history(homer, [corsair_vengeance_rgb_pro_16gb, g_skill_trident_z_neo_32gb, kingston_hyperx_predator_8gb, crucial_ballistix_32gb, team_group_t_force_delta_16gb]).
+search_history(marge, [intel_i9_10900k, nvidia_geforce_rtx_3090, amd_ryzen_9_5950x, intel_core_i7_11700k, nvidia_geforce_rtx_3080]).
+search_history(bart, [nvidia_geforce_rtx_3090, intel_i9_10900k, amd_radeon_rx_6900_xt, nvidia_geforce_rtx_3080, amd_ryzen_9_5950x]).
 
 % Categorization of products
 category(intel_i9_10900k, cpu).
@@ -126,20 +123,20 @@ performance(samsung_32gb_ddr4_ecc, 4.4).
 
 % User ratings for products
 user_rating(john, intel_i9_10900k, 4.5).
-user_rating(lisa, nvidia_geforce_rtx_3090, 5.0).
-user_rating(carl, corsair_vengeance_rgb_pro_16gb, 4.0).
-user_rating(don, intel_i9_10900k, 4.8).
-user_rating(abb, nvidia_geforce_rtx_3090, 4.7).
-user_rating(den, intel_i9_10900k, 4.2).
 user_rating(john, amd_ryzen_9_5950x, 4.8).
-user_rating(lisa, amd_radeon_rx_6900_xt, 4.6).
-user_rating(carl, g_skill_trident_z_neo_32gb, 4.2).
-user_rating(don, nvidia_geforce_rtx_3090, 4.9).
-user_rating(abb, intel_i9_10900k, 4.6).
-user_rating(den, nvidia_geforce_rtx_3090, 4.5).
 user_rating(john, intel_core_i7_11700k, 4.4).
+user_rating(wick, intel_i9_10900k, 4.5).
+user_rating(wick, amd_ryzen_5_5600x, 4.8).
+user_rating(wick, intel_core_i7_11700k, 4.4).
+user_rating(lisa, nvidia_geforce_rtx_3090, 5.0).
+user_rating(lisa, amd_radeon_rx_6900_xt, 4.6).
 user_rating(lisa, nvidia_geforce_rtx_3080, 4.9).
-user_rating(carl, kingston_hyperx_predator_8gb, 3.8).
-user_rating(don, amd_ryzen_7_5800x, 4.7).
-user_rating(abb, amd_radeon_rx_6900_xt, 4.5).
-user_rating(den, corsair_vengeance_rgb_pro_16gb, 4.1).
+user_rating(homer, corsair_vengeance_rgb_pro_16gb, 4.0).
+user_rating(homer, g_skill_trident_z_neo_32gb, 4.2).
+user_rating(homer, kingston_hyperx_predator_8gb, 3.8).
+user_rating(marge, nvidia_geforce_rtx_3090, 4.7).
+user_rating(marge, intel_i9_10900k, 4.6).
+user_rating(marge, amd_radeon_rx_6900_xt, 4.5).
+user_rating(bart, nvidia_geforce_rtx_3090, 4.9).
+user_rating(bart, intel_i9_10900k, 4.8).
+user_rating(bart, amd_ryzen_7_5800x, 4.7).

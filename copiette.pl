@@ -1,21 +1,26 @@
+:- dynamic category/2.
+:- dynamic price/2.
+:- dynamic performance/2.
+:- dynamic user_rating/3.
+
+
 % FACTS
 
-% Search history of users
-/*
-john è un utente che ha visitato prevalentemente cpu.
-lisa  è un utente che ha visitato prevalentemente gpu.
-carl  è un utente che ha visitato prevalentemente ram.
-don  è un utente che ha visitato prevalentemente cpu e qualche gpu.
-abb  è un utente che ha visitato prevalentemente gpu e qualche cpu.
-den  è un utente che ha visitato prodotti in maniera mista.
-*/
+% Users
+user(john).
+user(wick).
+user(lisa).
+user(homer).
+user(marge).
+user(bart).
 
+% Search history of users
 search_history(john, [intel_i9_10900k, amd_ryzen_9_5950x, intel_core_i7_11700k, amd_ryzen_7_5800x, intel_core_i5_11600k]).
+search_history(wick, [amd_ryzen_9_5950x, intel_core_i7_11700k, amd_ryzen_5_5600x, nvidia_geforce_rtx_3080]).
 search_history(lisa, [nvidia_geforce_rtx_3090, amd_radeon_rx_6900_xt, nvidia_geforce_rtx_3080, amd_radeon_rx_6800_xt, nvidia_geforce_rtx_3070]).
-search_history(carl, [corsair_vengeance_rgb_pro_16gb, g_skill_trident_z_neo_32gb, kingston_hyperx_predator_8gb, crucial_ballistix_32gb, team_group_t_force_delta_16gb]).
-search_history(don, [intel_i9_10900k, nvidia_geforce_rtx_3090, amd_ryzen_9_5950x, intel_core_i7_11700k, nvidia_geforce_rtx_3080]).
-search_history(abb, [nvidia_geforce_rtx_3090, intel_i9_10900k, amd_radeon_rx_6900_xt, nvidia_geforce_rtx_3080, amd_ryzen_9_5950x]).
-search_history(den, [intel_i9_10900k, nvidia_geforce_rtx_3090, corsair_vengeance_rgb_pro_16gb, amd_radeon_rx_6900_xt, g_skill_trident_z_neo_32gb]).
+search_history(homer, [corsair_vengeance_rgb_pro_16gb, g_skill_trident_z_neo_32gb, kingston_hyperx_predator_8gb, crucial_ballistix_32gb, team_group_t_force_delta_16gb]).
+search_history(marge, [intel_i9_10900k, nvidia_geforce_rtx_3090, amd_ryzen_9_5950x, intel_core_i7_11700k, nvidia_geforce_rtx_3080]).
+search_history(bart, [nvidia_geforce_rtx_3090, intel_i9_10900k, amd_radeon_rx_6900_xt, nvidia_geforce_rtx_3080, amd_ryzen_9_5950x]).
 
 % Categorization of products
 category(intel_i9_10900k, cpu).
@@ -81,25 +86,59 @@ price(a_data_xpg_spectrix_d60g_32gb, 169.99).
 price(mushkin_enhanced_redline_16gb, 119.99).
 price(samsung_32gb_ddr4_ecc, 249.99).
 
+% Performance facts for products
+performance(intel_i9_10900k, 4.7).
+performance(amd_ryzen_9_5950x, 4.9).
+performance(intel_core_i7_11700k, 4.5).
+performance(amd_ryzen_7_5800x, 4.6).
+performance(intel_core_i5_11600k, 4.2).
+performance(amd_ryzen_5_5600x, 4.4).
+performance(intel_pentium_gold_g6600, 3.0).
+performance(amd_athlon_gold_4500g, 3.5).
+performance(intel_celeron_g5905, 2.8).
+performance(amd_ryzen_3_5300g, 3.2).
+performance(nvidia_geforce_rtx_3090, 4.8).
+performance(amd_radeon_rx_6900_xt, 4.7).
+performance(nvidia_geforce_rtx_3080, 4.6).
+performance(amd_radeon_rx_6800_xt, 4.5).
+performance(nvidia_geforce_rtx_3070, 4.3).
+performance(amd_radeon_rx_6700_xt, 4.1).
+performance(nvidia_geforce_rtx_3060_ti, 3.9).
+performance(amd_radeon_rx_6600_xt, 3.8).
+performance(nvidia_geforce_rtx_3050, 3.0).
+performance(amd_radeon_rx_6500_xt, 2.9).
+performance(corsair_vengeance_rgb_pro_16gb, 4.3).
+performance(g_skill_trident_z_neo_32gb, 4.5).
+performance(kingston_hyperx_predator_8gb, 3.6).
+performance(crucial_ballistix_32gb, 4.0).
+performance(team_group_t_force_delta_16gb, 3.8).
+performance(hyperx_fury_rgb_8gb, 3.5).
+performance(patriot_viper_steel_16gb, 3.9).
+performance(a_data_xpg_spectrix_d60g_32gb, 4.2).
+performance(mushkin_enhanced_redline_16gb, 3.7).
+performance(samsung_32gb_ddr4_ecc, 4.4).
+
 % User ratings for products
 user_rating(john, intel_i9_10900k, 4.5).
-user_rating(lisa, nvidia_geforce_rtx_3090, 5.0).
-user_rating(carl, corsair_vengeance_rgb_pro_16gb, 4.0).
-user_rating(don, intel_i9_10900k, 4.8).
-user_rating(abb, nvidia_geforce_rtx_3090, 4.7).
-user_rating(den, intel_i9_10900k, 4.2).
 user_rating(john, amd_ryzen_9_5950x, 4.8).
-user_rating(lisa, amd_radeon_rx_6900_xt, 4.6).
-user_rating(carl, g_skill_trident_z_neo_32gb, 4.2).
-user_rating(don, nvidia_geforce_rtx_3090, 4.9).
-user_rating(abb, intel_i9_10900k, 4.6).
-user_rating(den, nvidia_geforce_rtx_3090, 4.5).
 user_rating(john, intel_core_i7_11700k, 4.4).
+user_rating(wick, intel_i9_10900k, 4.5).
+user_rating(wick, amd_ryzen_5_5600x, 4.8).
+user_rating(wick, intel_core_i7_11700k, 4.4).
+user_rating(lisa, nvidia_geforce_rtx_3090, 5.0).
+user_rating(lisa, amd_radeon_rx_6900_xt, 4.6).
 user_rating(lisa, nvidia_geforce_rtx_3080, 4.9).
-user_rating(carl, kingston_hyperx_predator_8gb, 3.8).
-user_rating(don, amd_ryzen_7_5800x, 4.7).
-user_rating(abb, amd_radeon_rx_6900_xt, 4.5).
-user_rating(den, corsair_vengeance_rgb_pro_16gb, 4.1).
+user_rating(homer, corsair_vengeance_rgb_pro_16gb, 4.0).
+user_rating(homer, g_skill_trident_z_neo_32gb, 4.2).
+user_rating(homer, kingston_hyperx_predator_8gb, 3.8).
+user_rating(marge, nvidia_geforce_rtx_3090, 4.7).
+user_rating(marge, intel_i9_10900k, 4.6).
+user_rating(marge, amd_radeon_rx_6900_xt, 4.5).
+user_rating(bart, nvidia_geforce_rtx_3090, 4.9).
+user_rating(bart, intel_i9_10900k, 4.8).
+user_rating(bart, amd_ryzen_7_5800x, 4.7).
+
+
 
 
 % RULES
@@ -219,10 +258,28 @@ print_recommendations_list([Recommendation|Tail]) :-
 category_exists(Category) :-
     category(_, Category).
 
-% Main entry point of the program
-:- initialization(main).
 
-main :-
+% Main entry point of the program
+init :-
+    write('MAIN MENU:'), nl,
+    write('1. login as user.'), nl,
+    write('2. login as admin.'), nl,
+    write('3. exit.'), nl, 
+    
+    read(Input),
+    menu_switch(Input).
+
+
+
+
+/*
+il menu utente dovrà dividersi in procedure come quello dell'admin
+e seguire quindi la "stessa sintassi"
+*/
+
+% main menu used by user
+menu_switch(1) :-
+    write('USER MENU '), nl,
     write('Enter your username: '),
     read(User),
     (   search_history(User, _)    % Check if the user exists in the search history
@@ -250,5 +307,76 @@ main :-
     ;   write('User not found.')
     ).
 
+% main menu used by admin
+menu_switch(2) :-
+    write('ADMIN MENU'), nl,
+    write('1. View all facts.'), nl,
+    write('2. Insert new component.'), nl,
+    write('3. Delete a fact.'), nl,
+    write('4. Go back to main menu.'), nl,
+    write('Select option...'), nl,
+    read(Input),
+    admin_option(Input).
+
+menu_switch(3) :- write('Program exited...'),
+                  halt.
+menu_switch(_) :- write('Invalid operation, please try again.'),
+                  nl,
+                  init.
 
 
+
+admin_option(1) :- print_all_facts,
+                   nl,
+                   menu_switch(2).
+
+admin_option(2) :- add_component,
+                   nl,
+                   menu_switch(2).
+
+admin_option(3) :- delete_component,
+                   nl,
+                   menu_switch(2).
+
+admin_option(4) :- init.
+admin_option(_) :- write('Invalid operation, please try again.'),
+                   nl,
+                   menu_switch(2).
+
+
+print_all_facts :-
+    listing(category),
+    listing(price),
+    listing(performance).
+
+add_component :-
+
+    write('Insert component\'s category (cpu, gpu, ram):'), nl,
+    read(Category),
+
+    write('Insert component\'s model:'), nl,
+    read(Model),
+
+    write('Insert component\'s price:'), nl,
+    read(Price),
+
+    write('Insert component\'s performance [0.0 - 5.0]'), nl,
+    read(Performance),
+
+    assert(category(Model, Category)),
+    assert(price(Model, Price)),
+    assert(performance(Model, Performance)),
+
+    write('Component added.'), nl.
+
+
+delete_component :-
+    
+    write('Insert component model to delete from knowledge base:'), nl,
+    read(Model),
+
+    retractall(category(Model, _)),
+    retractall(price(Model, _)),
+    retractall(performance(Model, _)),
+
+    write('Component removed.'), nl.
