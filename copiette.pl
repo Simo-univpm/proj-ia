@@ -280,6 +280,22 @@ e seguire quindi la "stessa sintassi"
 % main menu used by user
 menu_switch(1) :-
     write('USER MENU '), nl,
+    write('1. get suggestion.'),
+    write('2. rate component.'),
+    write('3. Go back to main menu.'), nl,
+    write('Select option...'), nl,
+    read(Input),
+    user_option(Input).
+
+/*
+user_option(1) :- 
+user_option(2) :- 
+user_option(3) :- 
+*/
+
+% main menu used by user
+menu_switch_OLD(1) :-
+    write('USER MENU '), nl,
     write('Enter your username: '),
     read(User),
     (   search_history(User, _)    % Check if the user exists in the search history
