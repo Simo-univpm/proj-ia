@@ -1,12 +1,10 @@
+% declaring dynamic facts for db assert and retract operations
 :- dynamic category/2.
 :- dynamic price/2.
 :- dynamic performance/2.
 :- dynamic user_rating/3.
 
-
-% FACTS
-
-% Users
+% Users registered in the recommendation system
 user(john).
 user(wick).
 user(lisa).
@@ -14,15 +12,30 @@ user(homer).
 user(marge).
 user(bart).
 
-% Search history of users
+
+% Facts of search history of registered users
+
+% john is a user who searched cpus
 search_history(john, [intel_i9_10900k, amd_ryzen_9_5950x, intel_core_i7_11700k, amd_ryzen_7_5800x, intel_core_i5_11600k]).
+
+% wick is a user similar to john who also searched only cpus
 search_history(wick, [amd_ryzen_9_5950x, intel_core_i7_11700k, amd_ryzen_5_5600x, nvidia_geforce_rtx_3080]).
+
+% lisa is a user who searched for gpus
 search_history(lisa, [nvidia_geforce_rtx_3090, amd_radeon_rx_6900_xt, nvidia_geforce_rtx_3080, amd_radeon_rx_6800_xt, nvidia_geforce_rtx_3070]).
+
+% homer is a user who searched for ram modules
 search_history(homer, [corsair_vengeance_rgb_pro_16gb, g_skill_trident_z_neo_32gb, kingston_hyperx_predator_8gb, crucial_ballistix_32gb, team_group_t_force_delta_16gb]).
-search_history(marge, [intel_i9_10900k, nvidia_geforce_rtx_3090, amd_ryzen_9_5950x, intel_core_i7_11700k, nvidia_geforce_rtx_3080]).
+
+% marge is a user who mostly searched gpus and also some cpu
+search_history(marge, [nvidia_geforce_rtx_3090, amd_ryzen_9_5950x, intel_core_i7_11700k, intel_i9_10900k, nvidia_geforce_rtx_3080]).
+
+% bart is a user who mostly searched cpus and also some gpu
 search_history(bart, [nvidia_geforce_rtx_3090, intel_i9_10900k, amd_radeon_rx_6900_xt, nvidia_geforce_rtx_3080, amd_ryzen_9_5950x]).
 
-% Categorization of products
+
+% Facts of products and their category (cpu, gpu, ram)
+%cpus
 category(intel_i9_10900k, cpu).
 category(amd_ryzen_9_5950x, cpu).
 category(intel_core_i7_11700k, cpu).
@@ -33,6 +46,8 @@ category(intel_pentium_gold_g6600, cpu).
 category(amd_athlon_gold_4500g, cpu).
 category(intel_celeron_g5905, cpu).
 category(amd_ryzen_3_5300g, cpu).
+
+%gpus
 category(nvidia_geforce_rtx_3090, gpu).
 category(amd_radeon_rx_6900_xt, gpu).
 category(nvidia_geforce_rtx_3080, gpu).
@@ -43,6 +58,8 @@ category(nvidia_geforce_rtx_3060_ti, gpu).
 category(amd_radeon_rx_6600_xt, gpu).
 category(nvidia_geforce_rtx_3050, gpu).
 category(amd_radeon_rx_6500_xt, gpu).
+
+%ram
 category(corsair_vengeance_rgb_pro_16gb, ram).
 category(g_skill_trident_z_neo_32gb, ram).
 category(kingston_hyperx_predator_8gb, ram).
@@ -54,7 +71,8 @@ category(a_data_xpg_spectrix_d60g_32gb, ram).
 category(mushkin_enhanced_redline_16gb, ram).
 category(samsung_32gb_ddr4_ecc, ram).
 
-% Price facts for products
+
+% Price facts 
 price(intel_i9_10900k, 499.99).
 price(amd_ryzen_9_5950x, 749.99).
 price(intel_core_i7_11700k, 399.99).
@@ -65,6 +83,7 @@ price(intel_pentium_gold_g6600, 89.99).
 price(amd_athlon_gold_4500g, 129.99).
 price(intel_celeron_g5905, 59.99).
 price(amd_ryzen_3_5300g, 119.99).
+
 price(nvidia_geforce_rtx_3090, 1499.99).
 price(amd_radeon_rx_6900_xt, 999.99).
 price(nvidia_geforce_rtx_3080, 799.99).
@@ -75,6 +94,7 @@ price(nvidia_geforce_rtx_3060_ti, 399.99).
 price(amd_radeon_rx_6600_xt, 349.99).
 price(nvidia_geforce_rtx_3050, 229.99).
 price(amd_radeon_rx_6500_xt, 199.99).
+
 price(corsair_vengeance_rgb_pro_16gb, 129.99).
 price(g_skill_trident_z_neo_32gb, 199.99).
 price(kingston_hyperx_predator_8gb, 69.99).
@@ -86,7 +106,8 @@ price(a_data_xpg_spectrix_d60g_32gb, 169.99).
 price(mushkin_enhanced_redline_16gb, 119.99).
 price(samsung_32gb_ddr4_ecc, 249.99).
 
-% Performance facts for products
+
+% Performance facts
 performance(intel_i9_10900k, 4.7).
 performance(amd_ryzen_9_5950x, 4.9).
 performance(intel_core_i7_11700k, 4.5).
@@ -97,6 +118,7 @@ performance(intel_pentium_gold_g6600, 3.0).
 performance(amd_athlon_gold_4500g, 3.5).
 performance(intel_celeron_g5905, 2.8).
 performance(amd_ryzen_3_5300g, 3.2).
+
 performance(nvidia_geforce_rtx_3090, 4.8).
 performance(amd_radeon_rx_6900_xt, 4.7).
 performance(nvidia_geforce_rtx_3080, 4.6).
@@ -107,6 +129,7 @@ performance(nvidia_geforce_rtx_3060_ti, 3.9).
 performance(amd_radeon_rx_6600_xt, 3.8).
 performance(nvidia_geforce_rtx_3050, 3.0).
 performance(amd_radeon_rx_6500_xt, 2.9).
+
 performance(corsair_vengeance_rgb_pro_16gb, 4.3).
 performance(g_skill_trident_z_neo_32gb, 4.5).
 performance(kingston_hyperx_predator_8gb, 3.6).
@@ -122,26 +145,27 @@ performance(samsung_32gb_ddr4_ecc, 4.4).
 user_rating(john, intel_i9_10900k, 4.5).
 user_rating(john, amd_ryzen_9_5950x, 4.8).
 user_rating(john, intel_core_i7_11700k, 4.4).
+
 user_rating(wick, intel_i9_10900k, 4.5).
 user_rating(wick, amd_ryzen_5_5600x, 4.8).
 user_rating(wick, intel_core_i7_11700k, 4.4).
+
 user_rating(lisa, nvidia_geforce_rtx_3090, 5.0).
 user_rating(lisa, amd_radeon_rx_6900_xt, 4.6).
 user_rating(lisa, nvidia_geforce_rtx_3080, 4.9).
+
 user_rating(homer, corsair_vengeance_rgb_pro_16gb, 4.0).
 user_rating(homer, g_skill_trident_z_neo_32gb, 4.2).
 user_rating(homer, kingston_hyperx_predator_8gb, 3.8).
+
 user_rating(marge, nvidia_geforce_rtx_3090, 4.7).
 user_rating(marge, intel_i9_10900k, 4.6).
 user_rating(marge, amd_radeon_rx_6900_xt, 4.5).
+
 user_rating(bart, nvidia_geforce_rtx_3090, 4.9).
 user_rating(bart, intel_i9_10900k, 4.8).
 user_rating(bart, amd_ryzen_7_5800x, 4.7).
 
-
-
-
-% RULES
 
 % Calculate the Pearson correlation coefficient between two lists of ratings
 pearson_correlation(User1Ratings, User2Ratings, Similarity) :-
@@ -232,15 +256,6 @@ recommend(User, MinPrice, MaxPrice, CategoryFilter, Recommendation) :-
     % Format the recommendations for display
     format_recommendations(UniqueRecommendations, Recommendation).
 
-% Parse the price input, converting "skip" to -1.0
-parse_price_input(skip, -1.0) :- !.
-parse_price_input(Value, ParsedValue) :-
-    (   number(Value)
-    ->  ParsedValue is float(Value)
-    ;   write('Invalid price input. Skipping price filter.'), nl,
-        ParsedValue = -1.0
-    ).
-
 % Print the list of recommendations
 print_recommendations([]) :-
     nl,
@@ -258,70 +273,29 @@ print_recommendations_list([Recommendation|Tail]) :-
 category_exists(Category) :-
     category(_, Category).
 
+/* ====================================================================================================== */
+/* menu section */ 
 
-% Main entry point of the program
+% Entry point of the program
 init :-
     write('MAIN MENU:'), nl,
-    write('1. login as user.'), nl,
-    write('2. login as admin.'), nl,
-    write('3. exit.'), nl, 
-    
+    write('1. go to user menu.'), nl,
+    write('2. go to admin menu.'), nl,
+    write('3. exit.'), nl,
+    write('Select option...'), nl,
     read(Input),
     menu_switch(Input).
-
-
-
-
-/*
-il menu utente dovrà dividersi in procedure come quello dell'admin
-e seguire quindi la "stessa sintassi"
-*/
 
 % main menu used by user
 menu_switch(1) :-
     write('USER MENU '), nl,
-    write('1. get suggestion.'),
-    write('2. rate component.'),
-    write('3. Go back to main menu.'), nl,
+    write('1. get suggestion.'), nl,
+    write('2. review component.'), nl,
+    write('3. check reviews.'), nl,
+    write('4. Go back to main menu.'), nl,
     write('Select option...'), nl,
     read(Input),
     user_option(Input).
-
-/*
-user_option(1) :- 
-user_option(2) :- 
-user_option(3) :- 
-*/
-
-% main menu used by user
-menu_switch_OLD(1) :-
-    write('USER MENU '), nl,
-    write('Enter your username: '),
-    read(User),
-    (   search_history(User, _)    % Check if the user exists in the search history
-    ->  (
-            write('Enter the minimum price (or type "skip" to skip): '),
-            read(MinPriceInput),
-            parse_price_input(MinPriceInput, MinPrice),
-            write('Enter the maximum price (or type "skip" to skip): '),
-            read(MaxPriceInput),
-            parse_price_input(MaxPriceInput, MaxPrice),
-            write('Enter the category (or type "skip" to skip): '),
-            read(CategoryFilter),
-            (   category_exists(CategoryFilter)
-            ->  recommend(User, MinPrice, MaxPrice, CategoryFilter, Recommendations),
-                nl,
-                write('Recommendations for '), write(User), write(':'), nl,
-                print_recommendations(Recommendations)
-            ;   write('Category not found. Using "skip" for category filter.'), nl,
-                recommend(User, MinPrice, MaxPrice, 'skip', Recommendations),
-                nl,
-                write('Recommendations for '), write(User), write(':'), nl,
-                print_recommendations(Recommendations)
-            )
-        )
-    ;   write('User not found.')
-    ).
 
 % main menu used by admin
 menu_switch(2) :-
@@ -336,11 +310,74 @@ menu_switch(2) :-
 
 menu_switch(3) :- write('Program exited...'),
                   halt.
+
+% default case
 menu_switch(_) :- write('Invalid operation, please try again.'),
                   nl,
                   init.
 
+/* ====================================================================================================== */
+/* User options section */ 
 
+user_option(1) :- get_recommendation,
+                  nl,
+                  menu_switch(1).
+
+user_option(2) :- review_component,
+                  nl,
+                  menu_switch(1).
+
+user_option(3) :- listing(user_rating),
+                  nl,
+                  menu_switch(1).
+
+user_option(4) :- init.
+user_option(_) :- write('Invalid operation, please try again.'),
+                  nl,
+                  menu_switch(1).
+
+get_recommendation :-
+
+    write('Enter username: '), nl, 
+    read(User),
+    (   search_history(User, _)    % Check if the user exists in the search history
+    ->  (
+            write('Enter min price (or type "skip" to skip): '),
+            read(MinPrice),
+
+            write('Enter max price (or type "skip" to skip): '),
+            read(MaxPrice),
+
+            write('Enter category of product (or type "skip" to skip): '),
+            read(CategoryFilter),
+
+            (   
+                category_exists(CategoryFilter) -> recommend(User, MinPrice, MaxPrice, CategoryFilter, Recommendations), nl,
+                write('Recommendations for '), write(User), write(':'), nl, print_recommendations(Recommendations)
+                
+            ;   write('Category not found. Using "skip" for category filter.'), nl,
+                recommend(User, MinPrice, MaxPrice, 'skip', Recommendations), nl,
+                write('Recommendations for '), write(User), write(':'), nl, print_recommendations(Recommendations)
+            )
+        )
+    ;   write('User not found.')
+    ).
+
+review_component :-
+
+    write('Enter username:'), nl,
+    read(Username),
+
+    write('Enter component\'s model:'), nl,
+    read(Model),
+
+    write('Enter rating:'), nl,
+    read(Rating),
+
+    assert(user_rating(Username, Model, Rating)),
+    write('Review added.'), nl.
+/* ====================================================================================================== */
+/* Admin options section */ 
 
 admin_option(1) :- print_all_facts,
                    nl,
@@ -367,16 +404,16 @@ print_all_facts :-
 
 add_component :-
 
-    write('Insert component\'s category (cpu, gpu, ram):'), nl,
+    write('Enter component\'s category (cpu, gpu, ram):'), nl,
     read(Category),
 
-    write('Insert component\'s model:'), nl,
+    write('Enter component\'s model:'), nl,
     read(Model),
 
-    write('Insert component\'s price:'), nl,
+    write('Enter component\'s price:'), nl,
     read(Price),
 
-    write('Insert component\'s performance [0.0 - 5.0]'), nl,
+    write('Enter component\'s performance [0.0 - 5.0]'), nl,
     read(Performance),
 
     assert(category(Model, Category)),
@@ -388,7 +425,7 @@ add_component :-
 
 delete_component :-
     
-    write('Insert component model to delete from knowledge base:'), nl,
+    write('Enter component model to delete from knowledge base:'), nl,
     read(Model),
 
     retractall(category(Model, _)),
