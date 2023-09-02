@@ -106,36 +106,50 @@ user_rating(nicholas, kingston_8gb, 3.8).
 
 % Calculate the Pearson correlation coefficient between two lists of ratings
 pearson_correlation(User1Ratings, User2Ratings, Similarity) :-
+    % Get the length of both rating lists (assuming they have the same length)
     length(User1Ratings, N),
     length(User2Ratings, N),
-    sum_ratings(User1Ratings, Sum1),
-    sum_ratings(User2Ratings, Sum2),
-    sum_squared_ratings(User1Ratings, SumSquared1),
-    sum_squared_ratings(User2Ratings, SumSquared2),
-    sum_product_ratings(User1Ratings, User2Ratings, SumProduct),
-    Numerator is N * SumProduct - Sum1 * Sum2,
-    Denominator1 is sqrt(N * SumSquared1 - Sum1 * Sum1),
-    Denominator2 is sqrt(N * SumSquared2 - Sum2 * Sum2),
-    Denominator is Denominator1 * Denominator2,
-    (Denominator = 0 -> Similarity = 0 ; Similarity is Numerator / Denominator).
+    % Calculate statistics for User1's ratings
+    statistics(User1Ratings, Sum1, SumSquared1),
+    % Calculate statistics for User2's ratings
+    statistics(User2Ratings, Sum2, SumSquared2),
+    % Calculate the dot product of ratings between User1 and User2
+    dot_product(User1Ratings, User2Ratings, SumProduct),
+    % Calculate the denominator for Pearson correlation coefficient
+    denominator(N, Sum1, SumSquared1, Denominator1),
+    denominator(N, Sum2, SumSquared2, Denominator2),
+    denominator(Denominator1, Denominator2, N, Denominator), % Pass N as the fourth parameter
+    % Calculate the similarity
+    (Denominator = 0 -> Similarity = 0 ; Similarity is SumProduct / Denominator),
+    write('Statistics for User1: Sum = '), write(Sum1), write(', Sum of Squares = '), write(SumSquared1), nl,
+    write('Statistics for User2: Sum = '), write(Sum2), write(', Sum of Squares = '), write(SumSquared2), nl,
+    write('Dot Product = '), write(SumProduct), nl,
+    write('Denominator1 = '), write(Denominator1), nl,
+    write('Denominator2 = '), write(Denominator2), nl,
+    write('Denominator = '), write(Denominator), nl,
+    write('Similarity: '), write(Similarity), nl.
 
-% Calculate the sum of ratings in a list
-sum_ratings([], 0).
-sum_ratings([Rating|Rest], Sum) :-
-    sum_ratings(Rest, RestSum),
-    Sum is RestSum + Rating.
+% Calculate the sum and sum of squared ratings in a list
+statistics([], 0, 0).
+statistics([Rating|Rest], Sum, SumSquared) :-
+    % Recursively calculate the sum and sum of squared ratings
+    statistics(Rest, RestSum, RestSumSquared),
+    Sum is RestSum + Rating,
+    SumSquared is RestSumSquared + Rating * Rating.
 
-% Calculate the sum of squared ratings in a list
-sum_squared_ratings([], 0).
-sum_squared_ratings([Rating|Rest], Sum) :-
-    sum_squared_ratings(Rest, RestSum),
-    Sum is RestSum + Rating * Rating.
+% Calculate the dot product of ratings between two lists
+dot_product([], [], 0).
+dot_product([Rating1|Rest1], [Rating2|Rest2], DotProduct) :-
+    % Recursively calculate the dot product
+    dot_product(Rest1, Rest2, RestDotProduct),
+    DotProduct is RestDotProduct + Rating1 * Rating2.
 
-% Calculate the sum of product of ratings between two lists
-sum_product_ratings([], [], 0).
-sum_product_ratings([Rating1|Rest1], [Rating2|Rest2], Sum) :-
-    sum_product_ratings(Rest1, Rest2, RestSum),
-    Sum is RestSum + Rating1 * Rating2.
+% Calculate the denominator for Pearson correlation coefficient
+denominator(0, _, _, 0) :- !. % Avoid division by zero
+denominator(N, Sum, SumSquared, Denominator) :-
+    % Calculate the denominator using the Pearson formula
+    Denominator is sqrt(N * SumSquared - Sum * Sum).
+
 
 % Remove duplicate recommendations from the list
 remove_duplicates([], []).
