@@ -138,6 +138,10 @@ sum_product_ratings([Rating1|Rest1], [Rating2|Rest2], Sum) :-
     sum_product_ratings(Rest1, Rest2, RestSum),
     Sum is RestSum + Rating1 * Rating2.
 
+
+%============================================================================
+
+
 % Remove duplicate recommendations from the list
 remove_duplicates([], []).
 remove_duplicates([[Product, Category, Price]|Tail], [[Product, Category, Price]|Result]) :-

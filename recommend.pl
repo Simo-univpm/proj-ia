@@ -1,3 +1,4 @@
+% C:\Users\Simo\progetti\proj-ia\proj-ia\
 % declaring dynamic facts for db assert and retract operations
 :- dynamic category/2.
 :- dynamic price/2.
@@ -95,39 +96,44 @@ price(samsung_32gb, 249.99).
 user_rating(simone, intel_i9, 4.5).
 user_rating(simone, amd_ryzen_9, 4.8).
 user_rating(simone, intel_i7, 4.4).
+user_rating(simone, nvidia_rtx_3060, 4.0).
 
 user_rating(francesco, nvidia_rtx_3090, 5.0).
 user_rating(francesco, amd_rx_6900, 4.6).
 user_rating(francesco, nvidia_rtx_3080, 4.9).
+%user_rating(francesco, nvidia_rtx_3060, 3.9).
+%user_rating(francesco, intel_i7, 4.9).
 
 user_rating(nicholas, corsair_16gb, 4.0).
 user_rating(nicholas, g_skill_32gb, 4.2).
 user_rating(nicholas, kingston_8gb, 3.8).
+user_rating(nicholas, intel_i5, 3.8).
+user_rating(nicholas, amd_ryzen_9, 4.8).
 
 % Calculate the Pearson correlation coefficient between two lists of ratings
-pearson_correlation(User1Ratings, User2Ratings, Similarity) :-
+pearson_correlation(RatingsUserA, RatingsUserB, Score) :-
     % Get the length of both rating lists (assuming they have the same length)
-    length(User1Ratings, N),
-    length(User2Ratings, N),
+    length(RatingsUserA, N),
+    length(RatingsUserB, N),
     % Calculate statistics for User1's ratings
-    statistics(User1Ratings, Sum1, SumSquared1),
+    statistics(RatingsUserA, Sum1, SumSquared1),
     % Calculate statistics for User2's ratings
-    statistics(User2Ratings, Sum2, SumSquared2),
+    statistics(RatingsUserB, Sum2, SumSquared2),
     % Calculate the dot product of ratings between User1 and User2
-    dot_product(User1Ratings, User2Ratings, SumProduct),
+    dot_product(RatingsUserA, RatingsUserB, SumProduct),
     % Calculate the denominator for Pearson correlation coefficient
     denominator(N, Sum1, SumSquared1, Denominator1),
     denominator(N, Sum2, SumSquared2, Denominator2),
     denominator(Denominator1, Denominator2, N, Denominator), % Pass N as the fourth parameter
-    % Calculate the similarity
-    (Denominator = 0 -> Similarity = 0 ; Similarity is SumProduct / Denominator),
+    % Calculate the Score
+    (Denominator = 0 -> Score = 0 ; Score is SumProduct / Denominator),
     write('Statistics for User1: Sum = '), write(Sum1), write(', Sum of Squares = '), write(SumSquared1), nl,
     write('Statistics for User2: Sum = '), write(Sum2), write(', Sum of Squares = '), write(SumSquared2), nl,
     write('Dot Product = '), write(SumProduct), nl,
     write('Denominator1 = '), write(Denominator1), nl,
     write('Denominator2 = '), write(Denominator2), nl,
     write('Denominator = '), write(Denominator), nl,
-    write('Similarity: '), write(Similarity), nl.
+    write('Score: '), write(Score), nl.
 
 % Calculate the sum and sum of squared ratings in a list
 statistics([], 0, 0).
@@ -151,78 +157,89 @@ denominator(N, Sum, SumSquared, Denominator) :-
     Denominator is sqrt(N * SumSquared - Sum * Sum).
 
 
-% Remove duplicate recommendations from the list
-remove_duplicates([], []).
-remove_duplicates([[Product, Category, Price]|Tail], [[Product, Category, Price]|Result]) :-
-    remove_duplicates(Tail, Result).
+%============================================================================
 
-% Format the recommendations as a list of formatted strings
-format_recommendations([], []).
-format_recommendations([[Product, Category, Price]|Tail], [Formatted|Result]) :-
-    format(atom(Formatted), "Product Name: ~w, Category: ~w, Price: ~2f", [Product, Category, Price]),
-    format_recommendations(Tail, Result).
 
-% Collaborative filtering algorithm with user ratings
-recommend(User, MinPrice, MaxPrice, CategoryFilter, Recommendation) :-
+% Define a recommend predicate that generates product recommendations for a user
+recommend(User, MinPrice, MaxPrice, CategoryFilter, Recommendations) :-
+    % Get the user's search history
     search_history(User, SearchHistory),
-    % Find all products that match the user's search history, category, and price range
-    findall([Product, Category, Price], (
-        member(Product, SearchHistory),
-        category(Product, Category),
-        price(Product, Price),
-        (MinPrice =< 0.0 ; Price >= MinPrice),
-        (MaxPrice =< 0.0 ; Price =< MaxPrice),
-        (CategoryFilter = 'skip' ; CategoryFilter = Category)
-    ), ExistingRecommendations),
-    % Retrieve user's ratings for products
-    findall(Rating, user_rating(User, _, Rating), UserRatings),
-    % Collaborative filtering: Find similar users based on their ratings
-    findall(SimilarUser, (
-        user_rating(SimilarUser, _, _),
-        SimilarUser \= User,
-        findall(SimilarRating, user_rating(SimilarUser, _, SimilarRating), SimilarRatings),
-        pearson_correlation(UserRatings, SimilarRatings, Similarity),
-        Similarity > 0.3 % Minimum similarity threshold (adjust as needed)
-    ), SimilarUsers),
-    % Find products that the similar users have searched for and add them to recommendations
-    findall([Product, Category, Price], (
-        member(SimilarUser, SimilarUsers),
-        search_history(SimilarUser, SimilarSearchHistory),
-        member(Product, SimilarSearchHistory),
-        category(Product, Category),
-        price(Product, Price),
-        \+ member([Product, Category, Price], ExistingRecommendations), % Exclude already recommended products
-        (MinPrice =< 0.0 ; Price >= MinPrice),
-        (MaxPrice =< 0.0 ; Price =< MaxPrice),
-        (CategoryFilter = 'skip' ; CategoryFilter = Category)
-    ), CollaborativeRecommendations),
-    % Combine and sort the collaborative recommendations
-    sort(CollaborativeRecommendations, SortedCollaborativeRecommendations),
-    % Combine and sort the existing recommendations
-    sort(ExistingRecommendations, SortedExistingRecommendations),
-    % Merge the collaborative and existing recommendations
-    append(SortedCollaborativeRecommendations, SortedExistingRecommendations, AllRecommendations),
-    % Remove duplicate recommendations
-    remove_duplicates(AllRecommendations, UniqueRecommendations),
-    % Format the recommendations for display
-    format_recommendations(UniqueRecommendations, Recommendation).
 
-% Print the list of recommendations
-print_recommendations([]) :-
-    nl,
-    write('No suggestions.'), nl.
-print_recommendations(Recommendations) :-
-    print_recommendations_list(Recommendations).
+    % Find products that match the user's search history, category filter, and price range
+    find_matching_products(SearchHistory, CategoryFilter, MinPrice, MaxPrice, MatchingProducts),
 
-% Print each recommendation in the list
-print_recommendations_list([]).
-print_recommendations_list([Recommendation|Tail]) :-
-    write('- '), write(Recommendation), nl,
-    print_recommendations_list(Tail).
+    % Get the user's ratings for products
+    find_user_ratings(User, UserRatings),
 
-% Check if a category exists
-category_exists(Category) :-
-    category(_, Category).
+    % Find similar users based on their ratings
+    find_similar_users(User, UserRatings, SimilarUsers),
+
+    % Generate collaborative recommendations based on what similar users have searched for
+    generate_collaborative_recommendations(SimilarUsers, CollaborativeRecommendations),
+
+    % Combine, sort, and remove duplicates from both collaborative and existing recommendations
+    merge_and_sort_recommendations(MatchingProducts, CollaborativeRecommendations, UniqueRecommendations),
+
+    % Format the unique recommendations into a list of strings for display
+    format_recommendations(UniqueRecommendations, Recommendations).
+
+% Find products that match the user's search history, category filter, and price range
+find_matching_products(SearchHistory, CategoryFilter, MinPrice, MaxPrice, MatchingProducts) :-
+    findall(Product, (member(Product, SearchHistory),
+                      category(Product, Category),
+                      (CategoryFilter = 'skip' ; CategoryFilter = Category),
+                      price(Product, Price),
+                      Price >= MinPrice,
+                      Price =< MaxPrice), MatchingProducts).
+
+% Find the user's ratings for products
+find_user_ratings(User, UserRatings) :-
+    findall(Rating-Product, user_rating(User, Product, Rating), UserRatings).
+
+% Find similar users based on their ratings
+find_similar_users(User, UserRatings, SimilarUsers) :-
+    findall(OtherUser-Similarity, (
+        user(OtherUser),
+        OtherUser \= User,
+        find_similar(UserRatings, OtherUser, Similarity)
+    ), SimilarUsers).
+
+% Define a predicate to find the similarity between two users based on their ratings
+find_similar(UserRatings, OtherUser, Similarity) :-
+    find_user_ratings(OtherUser, OtherUserRatings),
+    pearson_correlation(UserRatings, OtherUserRatings, Similarity).
+
+% Generate collaborative recommendations based on similar users
+generate_collaborative_recommendations(SimilarUsers, CollaborativeRecommendations) :-
+    findall(Product, (member(OtherUser, SimilarUsers),
+                      user_rating(OtherUser, Product, Rating),
+                      Rating >= 4.0), CollaborativeRecommendations).
+
+% Merge, sort, and remove duplicates from recommendations
+merge_and_sort_recommendations(MatchingProducts, CollaborativeRecommendations, UniqueRecommendations) :-
+    append(MatchingProducts, CollaborativeRecommendations, AllRecommendations),
+    sort(AllRecommendations, SortedRecommendations),
+    remove_duplicates(SortedRecommendations, UniqueRecommendations).
+
+% Define a predicate to remove duplicates from a list
+remove_duplicates([], []).
+remove_duplicates([X|Xs], [X|Ys]) :-
+    remove_duplicates(Xs, Ys),
+    \+ member(X, Ys).
+
+% Format recommendations into a list of strings
+format_recommendations([], []).
+format_recommendations([Product|Rest], [Formatted|FormattedRest]) :-
+    format_product(Product, Formatted),
+    format_recommendations(Rest, FormattedRest).
+
+% Format a product for display
+format_product(Product, Formatted) :-
+    category(Product, Category),
+    price(Product, Price),
+    atomic_list_concat([Product, ' (Category: ', Category, ', Price: $', Price, ')'], Formatted).
+
+
 
 /* ====================================================================================================== */
 /* menu section */ 
@@ -302,14 +319,9 @@ get_recommendation :-
             write('Enter category of product (or type "skip" to skip): '),
             read(CategoryFilter),
 
-            (   
-                category_exists(CategoryFilter) -> recommend(User, MinPrice, MaxPrice, CategoryFilter, Recommendations), nl,
-                write('Recommendations for '), write(User), write(':'), nl, print_recommendations(Recommendations)
-                
-            ;   write('Category not found. Using "skip" for category filter.'), nl,
-                recommend(User, MinPrice, MaxPrice, 'skip', Recommendations), nl,
-                write('Recommendations for '), write(User), write(':'), nl, print_recommendations(Recommendations)
-            )
+            recommend(User, MinPrice, MaxPrice, CategoryFilter, Recommendations), nl,
+            write('Recommendations for '), write(User), write(':'), nl, print_recommendations(Recommendations)
+
         )
     ;   write('User not found.')
     ).
@@ -327,6 +339,18 @@ review_component :-
 
     assert(user_rating(Username, Model, Rating)),
     write('Review added.'), nl.
+
+% Define a predicate to print recommendations
+print_recommendations([]) :- !. % Don't print anything if the list is empty.
+
+print_recommendations(Recommendations) :-
+    print_recommendations_list(Recommendations).
+
+print_recommendations_list([]).
+print_recommendations_list([Recommendation|Rest]) :-
+    write('- '), write(Recommendation), nl,
+    print_recommendations_list(Rest).
+
 /* ====================================================================================================== */
 /* Admin options section */ 
 
@@ -347,7 +371,6 @@ admin_option(_) :- write('Invalid operation, please try again.'),
                    nl,
                    menu_switch(2).
 
-
 print_all_facts :-
     listing(category),
     listing(price),
@@ -364,12 +387,8 @@ add_component :-
     write('Enter component\'s price:'), nl,
     read(Price),
 
-    write('Enter component\'s performance [0.0 - 5.0]'), nl,
-    read(Performance),
-
     assert(category(Model, Category)),
     assert(price(Model, Price)),
-    assert(performance(Model, Performance)),
 
     write('Component added.'), nl.
 
@@ -381,6 +400,5 @@ delete_component :-
 
     retractall(category(Model, _)),
     retractall(price(Model, _)),
-    retractall(performance(Model, _)),
 
     write('Component removed.'), nl.
