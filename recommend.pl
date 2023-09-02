@@ -157,7 +157,7 @@ denominator(N, Sum, SumSquared, Denominator) :-
     Denominator is sqrt(N * SumSquared - Sum * Sum).
 
 
-%============================================================================
+/* ====================================================================================================== */
 
 
 % Define a recommend predicate that generates product recommendations for a user
