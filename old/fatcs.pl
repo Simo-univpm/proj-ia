@@ -9,14 +9,6 @@ user(marge).
 user(bart).
 
 % Search history of users
-/*
-john è un utente che ha visitato prevalentemente cpu.
-wick è un utente che ha visitato prevalentemente cpu simile a john.
-lisa  è un utente che ha visitato prevalentemente gpu.
-homer  è un utente che ha visitato prevalentemente ram.
-marge  è un utente che ha visitato prevalentemente cpu e qualche gpu.
-bart  è un utente che ha visitato prevalentemente gpu e qualche cpu.
-*/
 
 search_history(john, [intel_i9_10900k, amd_ryzen_9_5950x, intel_core_i7_11700k, amd_ryzen_7_5800x, intel_core_i5_11600k]).
 search_history(wick, [amd_ryzen_9_5950x, intel_core_i7_11700k, amd_ryzen_5_5600x, nvidia_geforce_rtx_3080]).
@@ -88,38 +80,6 @@ price(patriot_viper_steel_16gb, 109.99).
 price(a_data_xpg_spectrix_d60g_32gb, 169.99).
 price(mushkin_enhanced_redline_16gb, 119.99).
 price(samsung_32gb_ddr4_ecc, 249.99).
-
-% Performance facts for products
-performance(intel_i9_10900k, 4.7).
-performance(amd_ryzen_9_5950x, 4.9).
-performance(intel_core_i7_11700k, 4.5).
-performance(amd_ryzen_7_5800x, 4.6).
-performance(intel_core_i5_11600k, 4.2).
-performance(amd_ryzen_5_5600x, 4.4).
-performance(intel_pentium_gold_g6600, 3.0).
-performance(amd_athlon_gold_4500g, 3.5).
-performance(intel_celeron_g5905, 2.8).
-performance(amd_ryzen_3_5300g, 3.2).
-performance(nvidia_geforce_rtx_3090, 4.8).
-performance(amd_radeon_rx_6900_xt, 4.7).
-performance(nvidia_geforce_rtx_3080, 4.6).
-performance(amd_radeon_rx_6800_xt, 4.5).
-performance(nvidia_geforce_rtx_3070, 4.3).
-performance(amd_radeon_rx_6700_xt, 4.1).
-performance(nvidia_geforce_rtx_3060_ti, 3.9).
-performance(amd_radeon_rx_6600_xt, 3.8).
-performance(nvidia_geforce_rtx_3050, 3.0).
-performance(amd_radeon_rx_6500_xt, 2.9).
-performance(corsair_vengeance_rgb_pro_16gb, 4.3).
-performance(g_skill_trident_z_neo_32gb, 4.5).
-performance(kingston_hyperx_predator_8gb, 3.6).
-performance(crucial_ballistix_32gb, 4.0).
-performance(team_group_t_force_delta_16gb, 3.8).
-performance(hyperx_fury_rgb_8gb, 3.5).
-performance(patriot_viper_steel_16gb, 3.9).
-performance(a_data_xpg_spectrix_d60g_32gb, 4.2).
-performance(mushkin_enhanced_redline_16gb, 3.7).
-performance(samsung_32gb_ddr4_ecc, 4.4).
 
 % User ratings for products
 user_rating(john, intel_i9_10900k, 4.5).

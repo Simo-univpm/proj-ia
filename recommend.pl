@@ -1,4 +1,3 @@
-% C:\Users\Simo\progetti\proj-ia\proj-ia\
 % declaring dynamic facts for db assert and retract operations
 :- dynamic category/2.
 :- dynamic price/2.
@@ -362,7 +361,7 @@ print_recommendations_list([Recommendation|Rest]) :-
     print_recommendations_list(Rest).
 
 /* ====================================================================================================== */
-/* Admin options section */ 
+/* Admin options and db management section */ 
 
 admin_option(1) :- print_all_facts,
                    nl,
