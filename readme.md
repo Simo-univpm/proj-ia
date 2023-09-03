@@ -31,8 +31,8 @@ To launch the program you will need to:
 
 ```
 - install prolog on your system (https://www.swi-prolog.org/);
-- dowload this source code and open a new terminal in the file position;
-- write "swipl" in the terminal to launch swipl;
-- write "[recommend]." to load the recommender system software;
-- write "init." to launch the recommender system software main entry point.
+- download this source code and open a new terminal in the file position;
+- write "swipl" in the terminal to launch swi-prolog;
+- write ***"[recommend]."*** to load the recommender system software;
+- write ***"init."*** to launch the recommender system software main entry point.
 ```
