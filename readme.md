@@ -1,4 +1,6 @@
-# Artificial intelligence project aa 22/23. Development of a pc components recommender system
+# Artificial intelligence project aa 22/23.
+
+Development of a pc components recommender system
 
 ## Group members
 - Francalancia Simone, id s1102917
