@@ -1,4 +1,4 @@
-# Artificial intelligence project aa 21/22
+# Artificial intelligence project aa 22/23
 ## Development of a pc components recommender system
 
 # Group members
