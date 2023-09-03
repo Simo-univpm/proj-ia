@@ -1,10 +1,10 @@
 # Artificial intelligence project aa 22/23
 ## Development of a pc components recommender system
 
-# Group members
+## Group members
 - Francalancia Simone, id s1102917
 
-# Project description
+## Project description
 This PC components recommender system is a Prolog-based system that helps users find recommendations for computer components such as CPUs (central processing units), GPUs (graphics processing units), and RAM (random-access memory) modules. It operates based on user search history and user ratings of components. Here is a brief description of its functionality:
 
     - Search History: Users have search histories that record the components they have searched for in the past. This history helps the system provide recommendations based on their preferences.
