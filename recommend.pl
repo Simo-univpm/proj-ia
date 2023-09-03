@@ -3,13 +3,13 @@
 :- dynamic price/2.
 :- dynamic user_rating/3.
 
-% Users registered in the recommendation system
+% users registered in the recommendation system
 user(simone).
 user(francesco).
 user(nicholas).
 user(giacomo).
 
-% Facts of search history of registered users
+% facts about search history of registered users
 % simone is a user who searched mostly cpus
 search_history(simone, [intel_i9, intel_i7, amd_ryzen_7, intel_i7, intel_i5, amd_rx_6500, nvidia_rtx_3060, intel_celeron]).
 
@@ -113,10 +113,6 @@ user_rating(nicholas, amd_ryzen_9, 4.8).
 
 user_rating(giacomo, intel_i7, 4.0).
 user_rating(giacomo, g_skill_32gb, 5.0).
-
-
-/* ====================================================================================================== */
-% Calculate the Pearson correlation coefficient between two lists of ratings
 
 pearson_correlation(RatingsUserA, RatingsUserB, Score) :-
     % Get the length of both rating lists (assuming they have the same length)
@@ -247,7 +243,7 @@ format_product(Product, Formatted) :-
 /* ====================================================================================================== */
 /* menu section */ 
 
-% Entry point of the program
+% first function that needs to be called
 init :-
     write('MAIN MENU:'), nl,
     write('1. go to user menu.'), nl,
