@@ -8,17 +8,20 @@
 user(simone).
 user(francesco).
 user(nicholas).
+user(giacomo).
 
 % Facts of search history of registered users
-% giacomo is a user who searched mostly cpus
-%search_history(simone, [intel_i9, intel_i7, amd_ryzen_7, intel_i7, intel_i5, amd_rx_6500, nvidia_rtx_3060, intel_celeron]).
-search_history(simone, [intel_i7]).
+% simone is a user who searched mostly cpus
+search_history(simone, [intel_i9, intel_i7, amd_ryzen_7, intel_i7, intel_i5, amd_rx_6500, nvidia_rtx_3060, intel_celeron]).
 
 % francesco is a user who searched mostly gpus
 search_history(francesco, [nvidia_rtx_3090, amd_rx_6900, nvidia_rtx_3080, nvidia_rtx_3070, amd_rx_6800, g_skill_32gb, crucial_32gb, intel_i5]).
 
 % nicholas is a user who searched mostly ram modules
 search_history(nicholas, [corsair_16gb, g_skill_32gb, crucial_32gb, patriot_16gb, a_data_32gb, intel_i5, intel_i7]).
+
+% giacomo is a user who haven't searched for nothing but still gets some suggestions
+search_history(giacomo,[]).
 
 
 % Facts of products about their category (cpu, gpu, ram), their price, and their ratings expressed by user reviews
@@ -109,7 +112,13 @@ user_rating(nicholas, kingston_8gb, 3.8).
 user_rating(nicholas, intel_i5, 3.8).
 user_rating(nicholas, amd_ryzen_9, 4.8).
 
+user_rating(giacomo, intel_i7, 4.0).
+user_rating(giacomo, g_skill_32gb, 5.0).
+
+
+/* ====================================================================================================== */
 % Calculate the Pearson correlation coefficient between two lists of ratings
+
 pearson_correlation(RatingsUserA, RatingsUserB, Score) :-
     % Get the length of both rating lists (assuming they have the same length)
     length(RatingsUserA, N),
@@ -125,14 +134,7 @@ pearson_correlation(RatingsUserA, RatingsUserB, Score) :-
     denominator(N, Sum2, SumSquared2, Denominator2),
     denominator(Denominator1, Denominator2, N, Denominator), % Pass N as the fourth parameter
     % Calculate the Score
-    (Denominator = 0 -> Score = 0 ; Score is SumProduct / Denominator),
-    write('Statistics for User1: Sum = '), write(Sum1), write(', Sum of Squares = '), write(SumSquared1), nl,
-    write('Statistics for User2: Sum = '), write(Sum2), write(', Sum of Squares = '), write(SumSquared2), nl,
-    write('Dot Product = '), write(SumProduct), nl,
-    write('Denominator1 = '), write(Denominator1), nl,
-    write('Denominator2 = '), write(Denominator2), nl,
-    write('Denominator = '), write(Denominator), nl,
-    write('Score: '), write(Score), nl.
+    (Denominator = 0 -> Score = 0 ; Score is SumProduct / Denominator).
 
 % Calculate the sum and sum of squared ratings in a list
 statistics([], 0, 0).
@@ -156,11 +158,13 @@ denominator(N, Sum, SumSquared, Denominator) :-
     Denominator is sqrt(N * SumSquared - Sum * Sum).
 
 
-/* ====================================================================================================== */
 
+/* ====================================================================================================== */
+% recommendation system core
 
 % Define a recommend predicate that generates product recommendations for a user
 recommend(User, MinPrice, MaxPrice, SelectedCategory, Recommendations) :-
+
     % Get the user's search history
     search_history(User, SearchHistory),
 
@@ -181,6 +185,9 @@ recommend(User, MinPrice, MaxPrice, SelectedCategory, Recommendations) :-
 
     % Format the unique recommendations into a list of strings for display
     format_recommendations(UniqueRecommendations, Recommendations).
+
+/* ====================================================================================================== */
+% recommendation system core helper functions
 
 % Find products that match the user's search history, category filter, and price range
 find_matching_products(SearchHistory, SelectedCategory, MinPrice, MaxPrice, MatchingProducts) :-
@@ -212,7 +219,7 @@ find_similar(UserRatings, OtherUser, Similarity) :-
 generate_collaborative_recommendations(SimilarUsers, CollaborativeRecommendations) :-
     findall(Product, (member(OtherUser, SimilarUsers),
                       user_rating(OtherUser, Product, Rating),
-                      Rating >= 4.0), CollaborativeRecommendations).
+                      Rating >= 3.3), CollaborativeRecommendations).
 
 % Merge, sort, and remove duplicates from recommendations
 merge_and_sort_recommendations(MatchingProducts, CollaborativeRecommendations, UniqueRecommendations) :-
@@ -302,27 +309,32 @@ user_option(_) :- write('Invalid operation, please try again.'),
                   menu_switch(1).
 
 get_recommendation :-
-
-    write('Enter username: '), nl, 
+    write('Enter username: '), nl,
     read(User),
-    (   search_history(User, _)    % Check if the user exists in the search history
-    ->  (
-            write('Enter the minimum price you are willing to pay: '), nl, 
+    (   search_history(User, SearchHistory) ->
+        (   SearchHistory = [] ->  % Check if the user's search history is empty
+            % User has an empty search history, recommend default products
+            DefaultRecommendations = [amd_ryzen_7, nvidia_rtx_3070, g_skill_32gb],
+            write('Since your search history is empty, we recommend the following products:'), nl,
+            print_recommendations(DefaultRecommendations)
+        ;
+            write('Enter the minimum price you are willing to pay: '), nl,
             read(MinPrice),
 
-            write('enter the maximum price you are willing to pay: '), nl,
+            write('Enter the maximum price you are willing to pay: '), nl,
             read(MaxPrice),
 
-            write('Enter the category of the product you are searching for (cpu, gpu or ram),'), nl,
-            write('or enter "skip" to let the system choose a category for you'), nl, 
+            write('Enter the category of the product you are searching for (cpu, gpu, or ram),'), nl,
+            write('or enter "skip" to let the system choose a category for you:'), nl,
             read(SelectedCategory),
 
-            recommend(User, MinPrice, MaxPrice, SelectedCategory, Recommendations), nl,
-            write('Recommendations for '), write(User), write(':'), nl, print_recommendations(Recommendations)
-
+            recommend(User, MinPrice, MaxPrice, SelectedCategory, Recommendations),
+            nl,
+            write('Recommendations for '), write(User), write(':'), nl,
+            print_recommendations(Recommendations)
         )
-    ;   write('User not found.')
-    ).
+    ;
+    write('User not found.')).
 
 review_component :-
 
