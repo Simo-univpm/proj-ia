@@ -10,17 +10,18 @@ user(francesco).
 user(nicholas).
 
 % Facts of search history of registered users
-% giacomo is a user who searched cpus
-search_history(simone, [intel_i9, amd_ryzen_9, intel_i7, amd_ryzen_7]).
+% giacomo is a user who searched mostly cpus
+%search_history(simone, [intel_i9, intel_i7, amd_ryzen_7, intel_i7, intel_i5, amd_rx_6500, nvidia_rtx_3060, intel_celeron]).
+search_history(simone, [intel_i7]).
 
-% franci is a user who searched for gpus
-search_history(francesco, [nvidia_rtx_3090, amd_rx_6900, nvidia_rtx_3080, nvidia_rtx_3070]).
+% francesco is a user who searched mostly gpus
+search_history(francesco, [nvidia_rtx_3090, amd_rx_6900, nvidia_rtx_3080, nvidia_rtx_3070, amd_rx_6800, g_skill_32gb, crucial_32gb, intel_i5]).
 
-% marco is a user who searched for ram modules
-search_history(nicholas, [corsair_16gb, g_skill_32gb, crucial_32gb]).
+% nicholas is a user who searched mostly ram modules
+search_history(nicholas, [corsair_16gb, g_skill_32gb, crucial_32gb, patriot_16gb, a_data_32gb, intel_i5, intel_i7]).
 
 
-% Facts of products and their category (cpu, gpu, ram)
+% Facts of products about their category (cpu, gpu, ram), their price, and their ratings expressed by user reviews
 %cpus
 category(intel_i9, cpu).
 category(amd_ryzen_9, cpu).
@@ -101,8 +102,6 @@ user_rating(simone, nvidia_rtx_3060, 4.0).
 user_rating(francesco, nvidia_rtx_3090, 5.0).
 user_rating(francesco, amd_rx_6900, 4.6).
 user_rating(francesco, nvidia_rtx_3080, 4.9).
-%user_rating(francesco, nvidia_rtx_3060, 3.9).
-%user_rating(francesco, intel_i7, 4.9).
 
 user_rating(nicholas, corsair_16gb, 4.0).
 user_rating(nicholas, g_skill_32gb, 4.2).
@@ -161,12 +160,12 @@ denominator(N, Sum, SumSquared, Denominator) :-
 
 
 % Define a recommend predicate that generates product recommendations for a user
-recommend(User, MinPrice, MaxPrice, CategoryFilter, Recommendations) :-
+recommend(User, MinPrice, MaxPrice, SelectedCategory, Recommendations) :-
     % Get the user's search history
     search_history(User, SearchHistory),
 
     % Find products that match the user's search history, category filter, and price range
-    find_matching_products(SearchHistory, CategoryFilter, MinPrice, MaxPrice, MatchingProducts),
+    find_matching_products(SearchHistory, SelectedCategory, MinPrice, MaxPrice, MatchingProducts),
 
     % Get the user's ratings for products
     find_user_ratings(User, UserRatings),
@@ -184,10 +183,10 @@ recommend(User, MinPrice, MaxPrice, CategoryFilter, Recommendations) :-
     format_recommendations(UniqueRecommendations, Recommendations).
 
 % Find products that match the user's search history, category filter, and price range
-find_matching_products(SearchHistory, CategoryFilter, MinPrice, MaxPrice, MatchingProducts) :-
+find_matching_products(SearchHistory, SelectedCategory, MinPrice, MaxPrice, MatchingProducts) :-
     findall(Product, (member(Product, SearchHistory),
                       category(Product, Category),
-                      (CategoryFilter = 'skip' ; CategoryFilter = Category),
+                      (SelectedCategory = 'skip' ; SelectedCategory = Category),
                       price(Product, Price),
                       Price >= MinPrice,
                       Price =< MaxPrice), MatchingProducts).
@@ -238,8 +237,6 @@ format_product(Product, Formatted) :-
     category(Product, Category),
     price(Product, Price),
     atomic_list_concat([Product, ' (Category: ', Category, ', Price: $', Price, ')'], Formatted).
-
-
 
 /* ====================================================================================================== */
 /* menu section */ 
@@ -310,16 +307,17 @@ get_recommendation :-
     read(User),
     (   search_history(User, _)    % Check if the user exists in the search history
     ->  (
-            write('Enter min price (or type "skip" to skip): '),
+            write('Enter the minimum price you are willing to pay: '), nl, 
             read(MinPrice),
 
-            write('Enter max price (or type "skip" to skip): '),
+            write('enter the maximum price you are willing to pay: '), nl,
             read(MaxPrice),
 
-            write('Enter category of product (or type "skip" to skip): '),
-            read(CategoryFilter),
+            write('Enter the category of the product you are searching for (cpu, gpu or ram),'), nl,
+            write('or enter "skip" to let the system choose a category for you'), nl, 
+            read(SelectedCategory),
 
-            recommend(User, MinPrice, MaxPrice, CategoryFilter, Recommendations), nl,
+            recommend(User, MinPrice, MaxPrice, SelectedCategory, Recommendations), nl,
             write('Recommendations for '), write(User), write(':'), nl, print_recommendations(Recommendations)
 
         )
