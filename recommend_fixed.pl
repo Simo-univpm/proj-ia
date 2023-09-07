@@ -464,6 +464,6 @@ delete_component :-
 
     retractall(category(Model, _)),
     retractall(price(Model, _)),
-    retractall(price(user_rating, _)),
+    retractall(user_rating(_, Model, _)),
 
     write('Component removed.'), nl.
