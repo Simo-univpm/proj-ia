@@ -1,5 +1,6 @@
 # Artificial intelligence project aa 22/23.
-Development of a pc components recommender system
+Development of a pc components recommender system.
+Run the "recommend_fixed" prolog file to use the updated code.
 
 ## Group members
 - Francalancia Simone, id s1102917
